@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 	"time"
 
@@ -221,6 +222,59 @@ func TestRunQuiet(t *testing.T) {
 	assert.Equal(t, true, cmd.DidFail())
 	assert.Equal(t, 1, len(cmd.Errors))
 	assert.Equal(t, 1, cmd.Attempts())
+}
+
+func TestPathWithBinary(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := os.TempDir()
+	defer os.RemoveAll(tmpDir)
+	tmpHomePath := tmpDir + "home"
+	tmpJxPath := tmpDir + "jx"
+
+	origHome := os.Getenv("HOME")
+	origJxHome := os.Getenv("JX_HOME")
+	os.Setenv("HOME", tmpHomePath)
+	os.Setenv("JX_HOME", tmpJxPath)
+	defer func() {
+		os.Setenv("HOME", origHome)
+		os.Setenv("JX_HOME", origJxHome)
+	}()
+
+	path := util.PathWithBinary()
+	pathDirs := strings.Split(path, string(os.PathListSeparator))
+
+	expectedJxPath := filepath.Join(tmpJxPath, "bin")
+	expectedMvnPath := filepath.Join(tmpJxPath, "maven", "bin")
+
+	assert.Equal(t, expectedJxPath, pathDirs[0])
+	assert.Equal(t, expectedMvnPath, pathDirs[len(pathDirs)-1])
+}
+
+func TestPathWithBinaryWithCustomPaths(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := os.TempDir()
+	defer os.RemoveAll(tmpDir)
+	tmpHomePath := tmpDir + "home"
+	tmpJxPath := tmpDir + "jx"
+	origHome := os.Getenv("HOME")
+	origJxHome := os.Getenv("JX_HOME")
+	os.Setenv("HOME", tmpHomePath)
+	os.Setenv("JX_HOME", tmpJxPath)
+	defer func() {
+		os.Setenv("HOME", origHome)
+		os.Setenv("JX_HOME", origJxHome)
+	}()
+
+	path := util.PathWithBinary("/custom/path/1", "/custom/path/2", "custom/path/3")
+	pathDirs := strings.Split(path, string(os.PathListSeparator))
+
+	expectedJxPath := filepath.Join(tmpJxPath, "bin")
+	expectedMvnPath := filepath.Join(tmpJxPath, "maven", "bin")
+
+	assert.Equal(t, expectedJxPath, pathDirs[0])
+	assert.Equal(t, expectedMvnPath, pathDirs[len(pathDirs)-1])
 }
 
 func getFailIteratorScript() string {
