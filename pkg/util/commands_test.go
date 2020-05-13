@@ -3,6 +3,7 @@
 package util_test
 
 import (
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -227,7 +228,8 @@ func TestRunQuiet(t *testing.T) {
 func TestPathWithBinary(t *testing.T) {
 	t.Parallel()
 
-	tmpDir := ioutil.TempDir("", "jx-test-"+t.Name())
+	tmpDir, err := ioutil.TempDir("", "jx-test-"+t.Name())
+	assert.NoError(t, err)
 	defer os.RemoveAll(tmpDir)
 	tmpHomePath := tmpDir + "home"
 	tmpJxPath := tmpDir + "jx"
@@ -254,7 +256,8 @@ func TestPathWithBinary(t *testing.T) {
 func TestPathWithBinaryWithCustomPaths(t *testing.T) {
 	t.Parallel()
 
-	tmpDir := ioutil.TempDir("", "jx-test-"+t.Name())
+	tmpDir, err := ioutil.TempDir("", "jx-test-"+t.Name())
+	assert.NoError(t, err)
 	defer os.RemoveAll(tmpDir)
 	tmpHomePath := tmpDir + "home"
 	tmpJxPath := tmpDir + "jx"
