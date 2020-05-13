@@ -232,8 +232,14 @@ func TestPathWithBinary(t *testing.T) {
 	tmpHomePath := tmpDir + "home"
 	tmpJxPath := tmpDir + "jx"
 
+	origHome := os.Getenv("HOME")
+	origJxHome := os.Getenv("JX_HOME")
 	os.Setenv("HOME", tmpHomePath)
 	os.Setenv("JX_HOME", tmpJxPath)
+	defer func() {
+		os.Setenv("HOME", origHome)
+		os.Setenv("JX_HOME", origJxHome)
+	}()
 
 	path := util.PathWithBinary()
 	pathDirs := strings.Split(path, string(os.PathListSeparator))
@@ -253,8 +259,14 @@ func TestPathWithBinaryWithCustomPaths(t *testing.T) {
 	tmpHomePath := tmpDir + "home"
 	tmpJxPath := tmpDir + "jx"
 
+	origHome := os.Getenv("HOME")
+	origJxHome := os.Getenv("JX_HOME")
 	os.Setenv("HOME", tmpHomePath)
 	os.Setenv("JX_HOME", tmpJxPath)
+	defer func() {
+		os.Setenv("HOME", origHome)
+		os.Setenv("JX_HOME", origJxHome)
+	}()
 
 	path := util.PathWithBinary("/custom/path/1", "/custom/path/2", "custom/path/3")
 	pathDirs := strings.Split(path, string(os.PathListSeparator))
