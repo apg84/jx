@@ -227,7 +227,7 @@ func TestRunQuiet(t *testing.T) {
 func TestPathWithBinary(t *testing.T) {
 	t.Parallel()
 
-	tmpDir := os.TempDir()
+	tmpDir := ioutil.TempDir("", "jx-test-"+t.Name())
 	defer os.RemoveAll(tmpDir)
 	tmpHomePath := tmpDir + "home"
 	tmpJxPath := tmpDir + "jx"
@@ -254,7 +254,7 @@ func TestPathWithBinary(t *testing.T) {
 func TestPathWithBinaryWithCustomPaths(t *testing.T) {
 	t.Parallel()
 
-	tmpDir := os.TempDir()
+	tmpDir := ioutil.TempDir("", "jx-test-"+t.Name())
 	defer os.RemoveAll(tmpDir)
 	tmpHomePath := tmpDir + "home"
 	tmpJxPath := tmpDir + "jx"
